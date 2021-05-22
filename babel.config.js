@@ -9,6 +9,8 @@ module.exports = {
           '@/utils': './src/utils',
           '@/navigator': './src/navigator',
           '@/pages': './src/pages',
+          '@/models': './src/models',
+          '@/config': './src/config',
         }
       }
     ]
