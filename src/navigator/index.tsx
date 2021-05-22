@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { CardStyleInterpolators, createStackNavigator, HeaderStyleInterpolators, StackNavigationProp } from '@react-navigation/stack';
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Account';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
 
 export type RootStackParamList = {
     BottomTabs: {
@@ -35,7 +35,8 @@ const Navigator = () => {
                     cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS,
                     gestureEnabled:true,
                     gestureDirection:'horizontal',
-                    headerStyle:{
+                    //headerStatusBarHeight:StatusBar.currentHeight,
+                    headerStyle:{ 
                         ...Platform.select({
                             android:{
                                 elevation:0,

@@ -6,9 +6,11 @@ import Account from '@/pages/Account';
 import Found from '@/pages/Found';
 import Listen from '@/pages/Listen';
 import { RootStackNavigation, RootStackParamList } from './index';
+import Icon from '@/assets/iconfont'
+import HomeTabs from './HomeTabs';
 
 export type BottomTabParamList = {
-    Home: undefined;
+    HomeTabs: undefined;
     Listen: undefined;
     Found: undefined;
     Account: undefined;
@@ -58,32 +60,36 @@ const BottomTabs = (props:IProps) => {
             }}
         >
             <Tab.Screen
-                name="Home"
-                component={Home}
-                options={{
-                    tabBarLabel: "首页"
+                name="HomeTabs"
+                component={HomeTabs}
+                options={{ 
+                    tabBarLabel:"首页",
+                    tabBarIcon:({color,size})=><Icon name="icon-shouye" color={color} size={size} />
                 }}
             />
             <Tab.Screen
                 name="Listen"
                 component={Listen}
-                options={{
-                    tabBarLabel: "我听"
+                options={{ 
+                    tabBarLabel:"我听",
+                    tabBarIcon:({color,size})=><Icon name="icon-shoucang" color={color} size={size} />
                 }}
             />
 
             <Tab.Screen
                 name="Found"
                 component={Found}
-                options={{
-                    tabBarLabel: "发现"
+                options={{ 
+                    tabBarLabel:"发现",
+                    tabBarIcon:({color,size})=><Icon name="icon-faxian" color={color} size={size} />
                 }}
             />
             <Tab.Screen
                 name="Account"
                 component={Account}
-                options={{
-                    tabBarLabel: "我的"
+                options={{ 
+                    tabBarLabel:"我的",
+                    tabBarIcon:({color,size})=><Icon name="icon-wodedangxuan" color={color} size={size} />
                 }}
             />
         </Tab.Navigator>

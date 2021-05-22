@@ -1,12 +1,18 @@
 import React from 'react';
 import Navigator from '@/navigator/index'
 import { Provider } from 'react-redux';
+import { StatusBar } from 'react-native';
 import store from '@/config/dva';
 
-const Main=()=>{
+const Main = () => {
     return (
         <Provider store={store}>
             <Navigator />
+            <StatusBar 
+                backgroundColor="transparent" 
+                barStyle="dark-content" 
+                translucent    
+            />
         </Provider>
     );
 }
