@@ -1,6 +1,7 @@
 import { Model,Effect } from 'dva-core-ts';
 import { Reducer } from 'redux';
 import axios from 'axios';
+import {RootState} from './index';
 
 //轮播图接口
 const CAROUSEL_URL='/mock/11/carousel';
@@ -13,6 +14,12 @@ export interface ICarousel{
     id:string;
     image:string;
     color:[string,string]
+}
+
+export interface IPagination{
+    current:number;
+    total:number;
+    hasMore:boolean;
 }
 
 export interface ILikes{
@@ -33,7 +40,9 @@ interface HomeState{
     carousels:ICarousel[];
     guessLikes:ILikes[];
     channels:IChannel[];
+    pagination:IPagination;
 }
+
 
 interface HomeModel extends Model{
     namespace: 'home';
@@ -51,7 +60,12 @@ interface HomeModel extends Model{
 const initialState={
     carousels:[],
     guessLikes:[],
-    channels:[]
+    channels:[],
+    pagination:{
+        current:1,
+        total:0,
+        hasMore:true
+    }
 }; 
 
 const homeModel:HomeModel={
@@ -84,13 +98,31 @@ const homeModel:HomeModel={
                 }
             })
         },
-        *fetchChannels(_,{ call,put }){
-            const { data:{result} } =yield call(axios.get,CHANNEL_URL);
-            console.log("列表数据",result);
+        *fetchChannels({payload},{ call,put,select }){
+            const { channels,pagination }=yield select((state:RootState)=>state.home);
+            let page=1;
+            if(payload && payload.loadMore){
+                page=pagination.current+1;
+            }
+            const { data } =yield call(axios.get,CHANNEL_URL,{
+                params:{
+                    page,
+                }
+            });
+            let newChannels=data.result;
+            if(payload && payload.loadMore){
+                newChannels=channels.concat(newChannels);
+            }
+            let newPagination=data.pagination;
             yield put({
                 type:'setState',
                 payload:{
-                    channels:result
+                    channels:newChannels,
+                    pagination:{
+                        current:page,
+                        total:newPagination.total,
+                        hasMore:newChannels.length<newPagination.total
+                    }
                 }
             })
         }
