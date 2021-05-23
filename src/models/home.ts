@@ -98,7 +98,7 @@ const homeModel:HomeModel={
                 }
             })
         },
-        *fetchChannels({payload},{ call,put,select }){
+        *fetchChannels({payload,callback},{ call,put,select }){
             const { channels,pagination }=yield select((state:RootState)=>state.home);
             let page=1;
             if(payload && payload.loadMore){
@@ -125,6 +125,7 @@ const homeModel:HomeModel={
                     }
                 }
             })
+            callback?.();
         }
     }
 }

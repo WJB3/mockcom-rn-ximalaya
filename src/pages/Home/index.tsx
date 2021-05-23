@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { RootStackNavigation } from '@/navigator/index'
 import { connect, ConnectedProps } from 'react-redux';
 import { ScrollView, FlatList, View, Text, ListRenderItemInfo, StyleSheet } from 'react-native';
@@ -27,6 +27,8 @@ interface IProps extends ModelState {
 const Home = (props: IProps) => {
 
     const { channels, carousels, likes, dispatch, hasMore,loading } = props;
+
+    const [refreshing,setRefresh]=useState(false);
 
     const fetchGuessLikes = () => {
         dispatch({
@@ -111,6 +113,16 @@ const Home = (props: IProps) => {
         )
     }
 
+    const handleRefresh=()=>{
+        setRefresh(true);
+        dispatch({
+            type: 'home/fetchChannels',
+            callback:()=>{
+                setRefresh(false);
+            }
+        }) 
+    }
+
     return ( 
         <FlatList
             data={channels}
@@ -121,6 +133,8 @@ const Home = (props: IProps) => {
             keyExtractor={keyExtractor}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.2}
+            onRefresh={handleRefresh}
+            refreshing={refreshing}
         />
     )
 }
