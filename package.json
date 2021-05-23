@@ -15,7 +15,9 @@
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
+    "@types/react-native-snap-carousel": "^3.8.3",
     "@types/react-redux": "^7.1.16",
+    "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "dva-core-ts": "^2.0.7",
     "dva-loading-ts": "^3.0.23",
@@ -27,6 +29,7 @@
     "react-native-reanimated": "^2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.2.0",
+    "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^3.0.1",
     "react-redux": "^7.2.4"

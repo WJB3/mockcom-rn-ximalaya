@@ -1,51 +1,54 @@
 import { Model,Effect } from 'dva-core-ts';
 import { Reducer } from 'redux';
+import axios from 'axios';
 
+const CAROUSEL_URL='/mock/11/carousel';
+
+export interface ICarousel{
+    id:string;
+    image:string;
+    color:[string,string]
+}
 interface HomeState{
-    num:number;
+    carousels:ICarousel[];
 }
 
 interface HomeModel extends Model{
     namespace: 'home';
-    state: {
-        num:number
-    };
+    state: HomeState;
     reducers:{
-        add:Reducer<HomeState>
+        setState:Reducer<HomeState>
     }; 
     effects:{
-        asyncAdd:Effect;
+        fetchCarousels:Effect;
     }
 }
 
 const initialState={
-    num:0,
-};
-
-function delay(timeout:number){
-    return new Promise((resolve,reject)=>{
-        setTimeout(resolve,timeout)
-    })
-}
+    carousels:[],
+}; 
 
 const homeModel:HomeModel={
     namespace:'home',
     state:initialState,
     reducers:{
-        add(state=initialState,{payload}){
+        setState(state=initialState,{payload}){
             return {
-                ...state,
-                num:state.num+payload.num
+                ...state, 
+                ...payload
             }
         }
     },
     effects:{
-        *asyncAdd({ payload },{ call,put }){
-            yield call(delay,3000);
+        *fetchCarousels({ payload },{ call,put }){ 
+            const { data } =yield call(axios.get,CAROUSEL_URL);
+            console.log("轮播图数据",data);
             yield put({
-                type:'add',
-                payload
-            });
+                type:'setState',
+                payload:{
+                    carousels:data
+                }
+            })
         }
     }
 }
