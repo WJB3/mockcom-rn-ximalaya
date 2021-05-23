@@ -27,7 +27,7 @@ const Carousel = (props:IProps) => {
 
     const {data}=props;
 
-    console.log("Carousel",data)
+    console.log("Carousel")
 
     const [activeSlide, setActiveSlide] = useState(0);
 
@@ -72,8 +72,7 @@ const Carousel = (props:IProps) => {
                 itemWidth={itemWidth}
                 hasParallaxImages
                 onSnapToItem={handleSnapToItem}
-                loop
-                autoplay
+                loop 
             />
             {CustomPagination}
         </View>

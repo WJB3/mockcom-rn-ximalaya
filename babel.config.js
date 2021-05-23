@@ -12,6 +12,7 @@ module.exports = {
           '@/models': './src/models',
           '@/assets': './src/assets',
           '@/config': './src/config',
+          '@/components': './src/components',
         }
       }
     ]
