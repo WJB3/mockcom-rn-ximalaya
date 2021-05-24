@@ -1,9 +1,9 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RootStackNavigation } from '@/navigator/index'
 import { connect, ConnectedProps } from 'react-redux';
-import { ScrollView, FlatList, View, Text, ListRenderItemInfo, StyleSheet } from 'react-native';
+import { ScrollView, FlatList, View, Text, NativeSyntheticEvent, ListRenderItemInfo, StyleSheet, NativeScrollEvent } from 'react-native';
 import { RootState } from '@/models/index';
-import Carousel from './Carousel';
+import Carousel, { slideHeight } from './Carousel';
 import Guess from './Guess';
 import ChannelItem from './ChannelItem';
 import { IChannel } from '@/models/home';
@@ -13,22 +13,24 @@ const mapStateToProps = ({ loading, home }: RootState) => ({
     carousels: home.carousels,
     likes: home.guessLikes,
     channels: home.channels,
-    hasMore:home.pagination.hasMore,
-    loading: loading.effects['home/fetchChannels']
+    hasMore: home.pagination.hasMore,
+    activeCarouselIndex: home.activeCarouselIndex,
+    gradientVisible: home.gradientVisible,
+    loading: loading.effects['home/fetchChannels'],
 })
 
 const connector = connect(mapStateToProps)
 
-type ModelState = ConnectedProps<typeof connector>;
+export type ModelState = ConnectedProps<typeof connector>;
 interface IProps extends ModelState {
     navigation: RootStackNavigation
 }
 
 const Home = (props: IProps) => {
 
-    const { channels, carousels, likes, dispatch, hasMore,loading } = props;
+    const { channels, carousels, likes, dispatch, activeCarouselIndex, hasMore, loading, gradientVisible } = props;
 
-    const [refreshing,setRefresh]=useState(false);
+    const [refreshing, setRefresh] = useState(false);
 
     const fetchGuessLikes = () => {
         dispatch({
@@ -48,8 +50,8 @@ const Home = (props: IProps) => {
         })
     }
 
-    const handlePress=(data:IChannel)=>{
-        console.log("data",data)
+    const handlePress = (data: IChannel) => {
+        console.log("data", data)
     }
 
     useEffect(() => {
@@ -62,22 +64,36 @@ const Home = (props: IProps) => {
         return <ChannelItem data={item} onPress={handlePress} />
     }
 
+    const handleSnapToItem = (index: number) => {
+        console.log("handleSnapToItem", index)
+        dispatch({
+            type: 'home/setState',
+            payload: {
+                activeCarouselIndex: index
+            }
+        })
+    }
+
+    console.log("activeCarouselIndex", carousels)
+
     const header = (
         <View>
-            <Carousel data={carousels} />
-            <Guess data={likes} onRefresh={fetchGuessLikes} />
+            <Carousel data={carousels} activeCarouselIndex={activeCarouselIndex} onSnapToItem={handleSnapToItem} />
+            <View style={styles.background}>
+                <Guess data={likes} onRefresh={fetchGuessLikes} /> 
+            </View>
         </View>
     )
 
-    const footer=()=>{
-        if(!hasMore){
+    const footer = () => {
+        if (!hasMore) {
             return (
                 <View style={styles.end}>
                     <Text>我是有底线的</Text>
                 </View>
             )
         }
-        if(loading && hasMore && channels.length>0){
+        if (loading && hasMore && channels.length > 0) {
             return (
                 <View style={styles.end}>
                     <Text>正在加载中...</Text>
@@ -85,27 +101,27 @@ const Home = (props: IProps) => {
             )
         }
         return <Text></Text>
-    } 
+    }
 
-    const keyExtractor=(item:IChannel)=>{
+    const keyExtractor = (item: IChannel) => {
         return item.id;
     }
 
-    const onEndReached=()=>{
-        if(loading || !hasMore){
-            return ;
+    const onEndReached = () => {
+        if (loading || !hasMore) {
+            return;
         }
         console.log("加载更多--")
         dispatch({
             type: 'home/fetchChannels',
-            payload:{
-                loadMore:true
+            payload: {
+                loadMore: true
             }
         })
     }
 
-    const empty=()=>{
-        if(loading) return <Text></Text>;
+    const empty = () => {
+        if (loading) return <Text></Text>;
         return (
             <View style={styles.empty}>
                 <Text>暂无数据</Text>
@@ -113,17 +129,32 @@ const Home = (props: IProps) => {
         )
     }
 
-    const handleRefresh=()=>{
+    const handleRefresh = () => {
         setRefresh(true);
         dispatch({
             type: 'home/fetchChannels',
-            callback:()=>{
+            callback: () => {
                 setRefresh(false);
             }
-        }) 
+        })
     }
 
-    return ( 
+    const handleScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offsetY = nativeEvent.contentOffset.y;
+        let newGradientVisible = offsetY < slideHeight;
+
+        if (gradientVisible !== newGradientVisible) {
+            dispatch({
+                type: 'home/setState',
+                payload: {
+                    gradientVisible:newGradientVisible
+                }
+            })
+        }
+
+    }
+
+    return (
         <FlatList
             data={channels}
             ListHeaderComponent={header}
@@ -135,18 +166,22 @@ const Home = (props: IProps) => {
             onEndReachedThreshold={0.2}
             onRefresh={handleRefresh}
             refreshing={refreshing}
+            onScroll={handleScroll}
         />
     )
 }
 
-const styles=StyleSheet.create({
-    end:{
-        alignItems:'center',
-        paddingVertical:10
+const styles = StyleSheet.create({
+    end: {
+        alignItems: 'center',
+        paddingVertical: 10
     },
-    empty:{
-        alignItems:'center',
-        paddingVertical:100
+    empty: {
+        alignItems: 'center',
+        paddingVertical: 100
+    },
+    background:{
+        backgroundColor:'#fff'
     }
 })
 

@@ -1,14 +1,22 @@
 import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator,MaterialTopTabBar, MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home';
+import TopTabBarWrapper from '@/pages/views/TopTabBarWrapper'
+import { StyleSheet } from 'react-native';
 
 const Tabs=createMaterialTopTabNavigator();
 
 const HomeTabs=()=>{
 
+    const renderTabbar=(props:MaterialTopTabBarProps)=>{
+        return <TopTabBarWrapper {...props} />
+    }
+
     return (
         <Tabs.Navigator
             lazy
+            tabBar={renderTabbar}
+            sceneContainerStyle={styles.sceneContainerStyle}
             tabBarOptions={{
                 scrollEnabled:true,
                 tabStyle:{
@@ -29,5 +37,11 @@ const HomeTabs=()=>{
         </Tabs.Navigator>
     )
 }
+
+const styles=StyleSheet.create({
+    sceneContainerStyle:{
+        backgroundColor:'transparent'
+    }
+})
 
 export default HomeTabs;

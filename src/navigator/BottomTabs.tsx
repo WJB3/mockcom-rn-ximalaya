@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { getFocusedRouteNameFromRoute, RouteProp, TabNavigationState } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from '@/pages/Home';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 import Account from '@/pages/Account';
 import Found from '@/pages/Found';
 import Listen from '@/pages/Listen';
@@ -31,7 +30,7 @@ function getHeaderTitle(route:Route){
     const routeName=getFocusedRouteNameFromRoute(route);
     switch(routeName){
         case 'Home':
-            return '首页';
+            return '';
         case 'Listen':
             return '我听';
         case 'Found':
@@ -39,8 +38,19 @@ function getHeaderTitle(route:Route){
         case 'Account':
             return '账户';
         default:
-            return '首页';
+            return '';
     }
+}
+
+function getHeaderTransparent(route:Route){
+    const routeName=getFocusedRouteNameFromRoute(route);
+    console.log("getHeaderTransparent",routeName)
+    if(routeName==="Home" || !routeName){
+        return true;
+    }else{
+        return false;
+    }
+
 }
 
 const BottomTabs = (props:IProps) => {
@@ -49,6 +59,7 @@ const BottomTabs = (props:IProps) => {
 
     useEffect(()=>{ 
         navigation.setOptions({
+            headerTransparent:getHeaderTransparent(route),
             headerTitle:getHeaderTitle(route)
         })
     },[route]);

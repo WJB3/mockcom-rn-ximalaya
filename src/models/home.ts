@@ -13,7 +13,7 @@ const CHANNEL_URL='/mock/11/list';
 export interface ICarousel{
     id:string;
     image:string;
-    color:[string,string]
+    colors:[string,string]
 }
 
 export interface IPagination{
@@ -41,6 +41,8 @@ interface HomeState{
     guessLikes:ILikes[];
     channels:IChannel[];
     pagination:IPagination;
+    activeCarouselIndex:number;
+    gradientVisible:boolean;
 }
 
 
@@ -65,7 +67,9 @@ const initialState={
         current:1,
         total:0,
         hasMore:true
-    }
+    },
+    activeCarouselIndex:0,
+    gradientVisible:true
 }; 
 
 const homeModel:HomeModel={

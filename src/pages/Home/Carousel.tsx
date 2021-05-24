@@ -10,29 +10,28 @@ import {
     hp
 } from '@/utils/index'
 import { StyleSheet, View } from 'react-native';
-import { ICarousel } from '@/models/home'
+import { ICarousel } from '@/models/home';
+import { ModelState } from './index';
  
 
 const sliderWidth = viewportWidth;
 const slideWidth = wp(90);
 
 const itemWidth = slideWidth + wp(2) * 2;
-const slideHeight = hp(26);
+export const slideHeight = hp(26);
 
-interface IProps{
-    data:ICarousel[]
+interface IProps {
+    data:ICarousel[],
+    activeCarouselIndex:number,
+    onSnapToItem?:any
 }
 
 const Carousel = (props:IProps) => {
 
-    const {data}=props;
-
-    console.log("Carousel")
-
-    const [activeSlide, setActiveSlide] = useState(0);
-
+    const { data,activeCarouselIndex,onSnapToItem }=props;
+  
     const handleSnapToItem = (index: number) => {
-        setActiveSlide(index)
+        onSnapToItem?.(index)
     }
 
     const renderItem = ({item}:{item:ICarousel}, parallaxProps?: AdditionalParallaxProps) => {
@@ -53,7 +52,7 @@ const Carousel = (props:IProps) => {
         <View style={style.paginationWrapper}>
             <Pagination
                 dotsLength={data.length}
-                activeDotIndex={activeSlide}
+                activeDotIndex={activeCarouselIndex}
                 containerStyle={style.paginationContainer}
                 dotContainerStyle={style.dotContainer}
                 dotStyle={style.dot}
